@@ -6,6 +6,8 @@ It is a non-blocking library using `std::thread` handle the required communicati
 ```cpp
 #include<stun.hpp>
 
+...
+
 StunState st;
 st.startThread("stun01.sipphone.com", 5000);
 
@@ -17,3 +19,17 @@ for (std::string ip : st.ips)
   printf("IP Found: %s\n", ip.c_str());
 ```
 
+Requires linking against libpthread (or whatever std::thread uses) to work.
+
+
+Compiling with `-DSTUN_DEBUG` will enable protocol-level logging.
+
+
+## Technical Details
+It only works with non-tls STUN servers (most of them at the time of writing). And implements all the common STUN messages, including `XOR_MAPPED_ADDRESS`, the specific flags that are discovered are in `int StunState::result` and can be AND'd with `STUN_NAT_*` flags to check for certain functionality.
+
+It uses xorshiro1024++ (see `rng.hpp`) to generate it's nonces.
+
+## TODO
+* [ ] Custom server ports
+* [ ] Allow reuse of socket for hole-punching
